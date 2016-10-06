@@ -20,10 +20,10 @@ if [ ! -d /media/share ]; then
   echo "use -v /my/dir/to/share:/media/share" > readme.txt
 fi
 
-sed -i'' -e "s,%USER%,${AFP_USER:-},g" /etc/afp.conf
+sed -i'' -e "s,%USER%,${AFP_USER:-},g" /netatalk/etc/afp.conf
 
 echo ---begin-afp.conf--
-cat /etc/afp.conf
+cat /netatalk/etc/afp.conf
 echo ---end---afp.conf--
 
 if [ "${AVAHI}" == "1" ]; then
@@ -38,4 +38,4 @@ else
     echo "Skipping avahi daemon, enable with env variable AVAHI=1"
 fi;
 
-exec /netatalk/sbin/netatalk -d -F /etc/afp.conf
+exec /netatalk/sbin/netatalk -d -F /netatalk/etc/afp.conf
