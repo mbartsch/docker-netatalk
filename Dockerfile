@@ -8,5 +8,6 @@ RUN apk update && apk add make gcc g++ dbus-glib dbus-glib-dev openssl openssl-d
 VOLUME [ "/netatalk/etc" ]
 COPY netatalk.sh /
 COPY afp.conf /netatalk/etc/afp.conf
-RUN chmod +x /netatalk.sh
+RUN chmod +x /netatalk.sh && rm -f /etc/avahi/services/*
 ENTRYPOINT [ "/netatalk.sh" ]
+EXPOSE "548/tcp"  "5353/udp"

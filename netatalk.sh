@@ -33,7 +33,7 @@ if [ "${AVAHI}" == "1" ]; then
     rm -rf /var/run/avahi-daemon/pid
     mkdir -p /var/run/dbus
     dbus-daemon --system
-    avahi-daemon -D --debug
+    avahi-daemon -D --debug --no-rlimits
 else
     echo "Skipping avahi daemon, enable with env variable AVAHI=1"
 fi;
