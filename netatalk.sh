@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 export PATH=$PATH:/netatalk/bin:/netatalk/sbin
 
 if [ ! -z "${AFP_USER}" ]; then
@@ -36,6 +36,6 @@ if [ "${AVAHI}" == "1" ]; then
     avahi-daemon -D --debug --no-rlimits
 else
     echo "Skipping avahi daemon, enable with env variable AVAHI=1"
-fi;
+fi
 
 exec /netatalk/sbin/netatalk -d -F /netatalk/etc/afp.conf
