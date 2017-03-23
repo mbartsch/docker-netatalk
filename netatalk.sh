@@ -37,5 +37,5 @@ if [ "${AVAHI}" == "1" ]; then
 else
     echo "Skipping avahi daemon, enable with env variable AVAHI=1"
 fi
-
+rm -vf /var/lock/netatalk
 exec /netatalk/sbin/netatalk -d -F /netatalk/etc/afp.conf
