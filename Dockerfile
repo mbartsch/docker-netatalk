@@ -11,7 +11,7 @@ FROM alpine:latest
 WORKDIR /
 RUN apk add --no-cache dbus-glib openssl dbus libacl libgcrypt avahi bash
 COPY netatalk.sh /
-COPY --chown=0:0 --from=builder /netatalk /netatalk
+COPY --from=builder /netatalk /netatalk
 COPY afp.conf /netatalk/etc/afp.conf
 RUN chmod +x /netatalk.sh && rm -f /etc/avahi/services/*
 ENTRYPOINT [ "/netatalk.sh" ]
