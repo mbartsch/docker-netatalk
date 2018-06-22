@@ -1,13 +1,17 @@
-# https://github.com/letsencrypt/letsencrypt/pull/431#issuecomment-103659297
-# it is more likely developers will already have ubuntu:trusty rather
-# than e.g. debian:jessie and image size differences are negligible
-FROM alpine:latest
+FROM alpine:latest AS builder
 MAINTAINER Marcelo Bartsch <spam-mb+github@bartsch.cl>
 VOLUME ["/netatalk/var", "/netatalk/etc"]
 
-RUN apk update && apk add make gcc g++ dbus-glib dbus-glib-dev openssl openssl-dev avahi db dbus curl db-dev bzip2 avahi-dev dbus-dev file bash dbus avahi acl libacl acl-dev py-dbus libgcrypt-dev libgcrypt && curl -L "http://prdownloads.sourceforge.net/netatalk/netatalk-3.1.11.tar.bz2?download" | bunzip2 -c - | tar -x -f - -C /tmp && cd /tmp/netatalk-3.1.11 && ./configure --prefix=/netatalk  --with-acls --enable-zeroconf --enable-dbus  && make && make install && apk del make gcc g++ openssl-dev db-dev avahi-dev dbus-dev acl-dev dbus-glib-dev libgcrypt-dev && rm -rf /tmp/netatalk-3.1.11 && cp /netatalk/etc/dbus-1/system.d/* /usr/share/dbus-1/system.d/
-#VOLUME [ "/netatalk/etc" ]
+RUN apk add  --no-cache make gcc g++ dbus-glib dbus-glib-dev openssl openssl-dev avahi db dbus curl db-dev bzip2 avahi-dev dbus-dev file bash dbus avahi acl libacl acl-dev py-dbus libgcrypt-dev libgcrypt 
+RUN curl -L "http://prdownloads.sourceforge.net/netatalk/netatalk-3.1.11.tar.bz2?download" | bunzip2 -c - | tar -x -f - -C /tmp 
+WORKDIR /tmp/netatalk-3.1.11
+RUN ./configure --prefix=/netatalk  --with-acls --enable-zeroconf --enable-dbus  && make && make install 
+
+FROM alpine:latest
+WORKDIR /
+RUN apk add --no-cache dbus-glib openssl dbus libacl libgcrypt avahi bash
 COPY netatalk.sh /
+COPY --chown=0:0 --from=builder /netatalk /netatalk
 COPY afp.conf /netatalk/etc/afp.conf
 RUN chmod +x /netatalk.sh && rm -f /etc/avahi/services/*
 ENTRYPOINT [ "/netatalk.sh" ]
